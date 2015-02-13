@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Pictures/background.jpg</file>
+        <file>Pictures/Welcome/logo-a.png</file>
+        <file>Pictures/Welcome/logo-a2.png</file>
+        <file>Pictures/Welcome/logo-a3.png</file>
+        <file>Pictures/Welcome/logo-g.png</file>
+        <file>Pictures/Welcome/logo-l.png</file>
+        <file>Pictures/starfighter.png</file>
+    </qresource>
+</RCC>
