@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
 
-    m_Scene = new GraphicsScene(0, 0, 1280, 720);
+    m_Scene = new GraphicsScene(0, 0, 800, 600);
 
     m_View = new QGraphicsView(m_Scene, this);
     m_View->setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
 //    #ifndef QT_NO_OPENGL
 //    m_View->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 //    #endif
-
+    resize(803, 603);
     setCentralWidget(m_View);
 }
 

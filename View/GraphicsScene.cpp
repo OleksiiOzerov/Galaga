@@ -10,20 +10,20 @@
 #include <QtCore/QPauseAnimation>
 #include <QtWidgets/QAction>
 
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QGraphicsSceneMouseEvent>
-#include <QtCore/QXmlStreamReader>
+
+#include <QTimer>
+#include <QDebug>
 
 GraphicsScene::GraphicsScene(int x, int y, int width, int height) :
-    QGraphicsScene(x , y, width, height)
+    QGraphicsScene(x , y, width, height), m_GameStared(false), m_Timer(nullptr)
 {
     PixmapItem *backgroundItem = new PixmapItem(QString(":/Pictures/background"));
 
     backgroundItem->setZValue(1);
     backgroundItem->setPos(0,0);
-    backgroundItem->resizePixmap(1280, 720);
+    backgroundItem->resizePixmap(800, 600);
     QGraphicsScene::addItem(backgroundItem);
 
     static const int nLetters = 6;
@@ -97,28 +97,74 @@ GraphicsScene::GraphicsScene(int x, int y, int width, int height) :
      //connect(machine, SIGNAL(finished()), qApp, SLOT(quit()));
 }
 
-void GraphicsScene::StartGame()
+void GraphicsScene::startGame()
 {
     lettersGroupMoving->stop();
 
-    connect(lettersGroupFading, SIGNAL(finished()), this, SLOT(GameStarted()));
+    connect(lettersGroupFading, SIGNAL(finished()), this, SLOT(gameStarted()));
 
     lettersGroupFading->start();
 }
 
-void GraphicsScene::GameStarted()
+void GraphicsScene::gameStarted()
 {
     lettersGroupFading->stop();
 
+    m_StarFighter = new PixmapItem(QString(":/Pictures/starfighter"));
 
-    PixmapItem *starFighter = new PixmapItem(QString(":/Pictures/starfighter"));
+    m_StarFighter->setZValue(1);
+    m_StarFighter->setPos(400, 500);
+    m_StarFighter->resizePixmap(50, 50);
+    QGraphicsScene::addItem(m_StarFighter);
 
-    starFighter->setZValue(1);
-    starFighter->setPos(400, 600);
-    starFighter->resizePixmap(50, 50);
-    //backgroundItem->resizePixmap(1280, 720);
-    QGraphicsScene::addItem(starFighter);
+    m_GameStared = true;
+}
 
+void GraphicsScene::moveLeft()
+{
+    if (m_StarFighter)
+    {
+        qreal newXPos = m_StarFighter->x() - 5.0;
+
+        if (newXPos > 0)
+            m_StarFighter->setX(newXPos);
+    }
+}
+
+void GraphicsScene::moveRight()
+{
+    if (m_StarFighter)
+    {
+        qreal newXPos = m_StarFighter->x() + 5.0;
+
+        if (newXPos < width() - m_StarFighter->size().width())
+            m_StarFighter->setX(newXPos);
+    }
+}
+
+void GraphicsScene::fire()
+{
+    if (!m_Timer)
+    {
+        m_Timer = new QTimer(this);
+        connect(m_Timer, SIGNAL(timeout()), this, SLOT(updateMissiles()));
+        m_Timer->start(100);
+    }
+
+    m_MissilesCollection.push_back(PixmapItem(":/Pictures/bomb"));
+    PixmapItem & missile = m_MissilesCollection.back();
+    missile.setZValue(2);
+    missile.setX(m_StarFighter->x() + m_StarFighter->size().rwidth() / 2 - missile.size().width() / 2);
+    missile.setY(m_StarFighter->y());
+    QGraphicsScene::addItem(&missile);
+}
+
+void  GraphicsScene::updateMissiles()
+{
+    for (auto it = m_MissilesCollection.begin(); it != m_MissilesCollection.end(); ++it)
+    {
+        it->setY(it->y() - 10.0);
+    }
 }
 
 void GraphicsScene::keyPressEvent(QKeyEvent *event)
@@ -127,7 +173,19 @@ void GraphicsScene::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
     case Qt::Key_Space:
-        StartGame();
+        if (!m_GameStared)
+            startGame();
+        else
+            fire();
         break;
+
+    case Qt::Key_Left:
+        moveLeft();
+        break;
+
+    case Qt::Key_Right:
+        moveRight();
+        break;
+
     }
 }

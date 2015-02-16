@@ -7,5 +7,6 @@
         <file>Pictures/Welcome/logo-g.png</file>
         <file>Pictures/Welcome/logo-l.png</file>
         <file>Pictures/starfighter.png</file>
+        <file>Pictures/bomb.png</file>
     </qresource>
 </RCC>
