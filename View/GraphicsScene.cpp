@@ -23,7 +23,7 @@ GraphicsScene::GraphicsScene(int x, int y, int width, int height) :
 
     backgroundItem->setZValue(1);
     backgroundItem->setPos(0,0);
-    backgroundItem->resizePixmap(800, 600);
+    backgroundItem->resizePixmap(width, height);
     QGraphicsScene::addItem(backgroundItem);
 
     static const int nLetters = 6;
@@ -169,7 +169,7 @@ void  GraphicsScene::updateMissiles()
 
 void GraphicsScene::keyPressEvent(QKeyEvent *event)
 {
-
+    qDebug() << "events GraphicsScene";
     switch (event->key())
     {
     case Qt::Key_Space:
@@ -188,4 +188,5 @@ void GraphicsScene::keyPressEvent(QKeyEvent *event)
         break;
 
     }
+    event->ignore();
 }
