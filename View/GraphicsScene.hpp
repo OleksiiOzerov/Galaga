@@ -1,15 +1,15 @@
 #ifndef GRAPHICSVIEW_HP
 #define GRAPHICSVIEW_HP
 
-#include "PixmapItem.hpp"
+
 
 #include <QGraphicsScene>
 #include <QLinkedList>
 
 class QSequentialAnimationGroup;
 class QParallelAnimationGroup;
-
-class QTimer;
+class StarFighter;
+class PixmapItem;
 
 class GraphicsScene : public QGraphicsScene
 {
@@ -18,31 +18,33 @@ class GraphicsScene : public QGraphicsScene
 public:
     explicit GraphicsScene(int x, int y, int width, int height);
 
+    void setupScene();
+
 private slots:
     void gameStarted();
-    void updateMissiles();
+    //void updateMissiles();
 
 protected:
-    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+    //void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 
 private:
-    void startGame();
+//    void startGame();
 
-    void moveLeft();
-    void moveRight();
+//    void moveLeft();
+//    void moveRight();
 
-    void fire();
+//    void fire();
 
-    bool m_GameStared;
+//    bool m_GameStared;
 
-    PixmapItem * m_StarFighter;
+    StarFighter * m_StarFighter;
 
-    QTimer * m_Timer;
+//    QTimer * m_Timer;
 
-    QLinkedList<PixmapItem> m_MissilesCollection;
+//    QLinkedList<PixmapItem> m_MissilesCollection;
 
-    QSequentialAnimationGroup * lettersGroupMoving;
-    QParallelAnimationGroup * lettersGroupFading;
+    QSequentialAnimationGroup * gameLogoAnimation;
+    QParallelAnimationGroup * gamelogoFadingAnimation;
 };
 
 #endif // GRAPHICSVIEW_HP

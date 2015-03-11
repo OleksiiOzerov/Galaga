@@ -17,12 +17,16 @@ TEMPLATE = app
 SOURCES += main.cpp \
     View/MainWindow.cpp \
     View/GraphicsScene.cpp \
-    View/PixmapItem.cpp
+    View/PixmapItem.cpp \
+    View/AnimationState.cpp \
+    View/StarFighter.cpp
 
 HEADERS  += \
     View/MainWindow.hpp \
     View/GraphicsScene.hpp \
-    View/PixmapItem.hpp
+    View/PixmapItem.hpp \
+    View/AnimationState.hpp \
+    View/StarFighter.hpp
 
 RESOURCES += \
     Galaga.qrc

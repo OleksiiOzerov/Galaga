@@ -1,5 +1,8 @@
 #include "GraphicsScene.hpp"
 #include "PixmapItem.hpp"
+#include "AnimationState.hpp"
+
+#include "StarFighter.hpp"
 
 #include <QKeyEvent>
 #include <QtCore/QPropertyAnimation>
@@ -11,13 +14,12 @@
 #include <QtWidgets/QAction>
 
 #include <QtWidgets/QGraphicsView>
-#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <QKeyEventTransition>
 
-#include <QTimer>
 #include <QDebug>
 
 GraphicsScene::GraphicsScene(int x, int y, int width, int height) :
-    QGraphicsScene(x , y, width, height), m_GameStared(false), m_Timer(nullptr)
+    QGraphicsScene(x ,y, width, height)/*, m_GameStared(false), m_Timer(nullptr)*/
 {
     PixmapItem *backgroundItem = new PixmapItem(QString(":/Pictures/background"));
 
@@ -40,153 +42,157 @@ GraphicsScene::GraphicsScene(int x, int y, int width, int height) :
         {"a",   800,  2000, 400, 250 }
     };
 
-    lettersGroupMoving = new QSequentialAnimationGroup(this);
-    lettersGroupFading = new QParallelAnimationGroup(this);
+    gameLogoAnimation = new QSequentialAnimationGroup(this);
+    gamelogoFadingAnimation = new QParallelAnimationGroup(this);
 
     for (int i = 0; i < nLetters; ++i) {
         PixmapItem *logo = new PixmapItem(QLatin1String(":/Pictures/Welcome/logo-") + logoData[i].pix, this);
         logo->setPos(logoData[i].initX, logoData[i].initY);
         logo->setZValue(i + 3);
         //creation of the animations for moving letters
-        QPropertyAnimation *moveAnim = new QPropertyAnimation(logo, "pos", lettersGroupMoving);
+        QPropertyAnimation *moveAnim = new QPropertyAnimation(logo, "pos", gameLogoAnimation);
         moveAnim->setEndValue(QPointF(logoData[i].destX, logoData[i].destY));
         moveAnim->setDuration(200);
         moveAnim->setEasingCurve(QEasingCurve::OutElastic);
-        lettersGroupMoving->addPause(50);
+        gameLogoAnimation->addPause(50);
         //creation of the animations for fading out the letters
-        QPropertyAnimation *fadeAnim = new QPropertyAnimation(logo, "opacity", lettersGroupFading);
+        QPropertyAnimation *fadeAnim = new QPropertyAnimation(logo, "opacity", gamelogoFadingAnimation);
         fadeAnim->setDuration(800);
         fadeAnim->setEndValue(0);
         fadeAnim->setEasingCurve(QEasingCurve::OutQuad);
     }
-    lettersGroupMoving->start();
 
-    //QStateMachine *machine = new QStateMachine(this);
 
-    //This state is when the player is playing
-    //PlayState *gameState = new PlayState(this, machine);
-
-    //Final state
-    //QFinalState *final = new QFinalState(machine);
-
-    //Animation when the player enter in the game
-    //QAnimationState *lettersMovingState = new QAnimationState(machine);
-    //lettersMovingState->setAnimation(lettersGroupMoving);
-
-//    //Animation when the welcome screen disappear
-    //QAnimationState *lettersFadingState = new QAnimationState(machine);
-    //lettersFadingState->setAnimation(lettersGroupFading);
-
-    //if new game then we fade out the welcome screen and start playing
-    //lettersMovingState->addTransition(newAction, SIGNAL(triggered()), lettersFadingState);
-    //lettersFadingState->addTransition(lettersFadingState, SIGNAL(animationFinished()), gameState);
-
-    //New Game is triggered then player start playing
-    //gameState->addTransition(newAction, SIGNAL(triggered()), gameState);
-
-    //Wanna quit, then connect to CTRL+Q
-    //gameState->addTransition(quitAction, SIGNAL(triggered()), final);
-    //lettersMovingState->addTransition(quitAction, SIGNAL(triggered()), final);
-
-    //Welcome screen is the initial state
-     //machine->setInitialState(lettersMovingState);
-
-     //machine->start();
-
-     //We reach the final state, then we quit
-     //connect(machine, SIGNAL(finished()), qApp, SLOT(quit()));
-}
-
-void GraphicsScene::startGame()
-{
-    lettersGroupMoving->stop();
-
-    connect(lettersGroupFading, SIGNAL(finished()), this, SLOT(gameStarted()));
-
-    lettersGroupFading->start();
-}
-
-void GraphicsScene::gameStarted()
-{
-    lettersGroupFading->stop();
-
-    m_StarFighter = new PixmapItem(QString(":/Pictures/starfighter"));
+    m_StarFighter = new StarFighter();
 
     m_StarFighter->setZValue(1);
     m_StarFighter->setPos(400, 500);
     m_StarFighter->resizePixmap(50, 50);
+    m_StarFighter->hide();
     QGraphicsScene::addItem(m_StarFighter);
 
-    m_GameStared = true;
 }
 
-void GraphicsScene::moveLeft()
+void GraphicsScene::setupScene()
 {
-    if (m_StarFighter)
-    {
-        qreal newXPos = m_StarFighter->x() - 5.0;
+    QStateMachine *gameStateMachine = new QStateMachine(this);
 
-        if (newXPos > 0)
-            m_StarFighter->setX(newXPos);
-    }
+
+    //Animation when the player enter in the game
+    AnimationState *gameLogoState = new AnimationState(gameStateMachine);
+    gameLogoState->setAnimation(gameLogoAnimation);
+
+    //Animation when the welcome screen disappear
+    AnimationState *logoFadingState = new AnimationState(gameStateMachine);
+    logoFadingState->setAnimation(gamelogoFadingAnimation);
+
+    QKeyEventTransition *startLogoFaiding = new QKeyEventTransition(this, QEvent::KeyPress, Qt::Key_Space);
+    startLogoFaiding->setTargetState(logoFadingState);
+
+    gameLogoState->addTransition(startLogoFaiding);
+            //if new game then we fade out the welcome screen and start playing
+    //gameLogoState->addTransition(newAction, SIGNAL(triggered()), lettersFadingState);
+
+
+    //This state is when the player is playing
+    GameStartState *gameState = new GameStartState(gameStateMachine);
+    logoFadingState->addTransition(logoFadingState, SIGNAL(animationFinished()), gameState);
+
+
+    connect(gameState, SIGNAL(startGame()), this, SLOT(gameStarted()));
+    //Welcome screen is the initial state
+    gameStateMachine->setInitialState(gameLogoState);
+
+    gameStateMachine->start();
+
+    //We reach the final state, then we quit
+    //connect(machine, SIGNAL(finished()), qApp, SLOT(quit()));
 }
 
-void GraphicsScene::moveRight()
+
+//void GraphicsScene::startGame()
+//{
+//    gameLogoAnimation->stop();
+
+//    connect(gamelogoFadingAnimation, SIGNAL(finished()), this, SLOT(gameStarted()));
+
+//    gamelogoFadingAnimation->start();
+//}
+
+void GraphicsScene::gameStarted()
 {
-    if (m_StarFighter)
-    {
-        qreal newXPos = m_StarFighter->x() + 5.0;
-
-        if (newXPos < width() - m_StarFighter->size().width())
-            m_StarFighter->setX(newXPos);
-    }
+    m_StarFighter->show();
+    m_StarFighter->fly();
+    setFocusItem(m_StarFighter, Qt::OtherFocusReason);
 }
 
-void GraphicsScene::fire()
-{
-    if (!m_Timer)
-    {
-        m_Timer = new QTimer(this);
-        connect(m_Timer, SIGNAL(timeout()), this, SLOT(updateMissiles()));
-        m_Timer->start(100);
-    }
+//void GraphicsScene::moveLeft()
+//{
+//    if (m_StarFighter)
+//    {
+//        qreal newXPos = m_StarFighter->x() - 5.0;
 
-    m_MissilesCollection.push_back(PixmapItem(":/Pictures/bomb"));
-    PixmapItem & missile = m_MissilesCollection.back();
-    missile.setZValue(2);
-    missile.setX(m_StarFighter->x() + m_StarFighter->size().rwidth() / 2 - missile.size().width() / 2);
-    missile.setY(m_StarFighter->y());
-    QGraphicsScene::addItem(&missile);
-}
+//        if (newXPos > 0)
+//            m_StarFighter->setX(newXPos);
+//    }
+//}
 
-void  GraphicsScene::updateMissiles()
-{
-    for (auto it = m_MissilesCollection.begin(); it != m_MissilesCollection.end(); ++it)
-    {
-        it->setY(it->y() - 10.0);
-    }
-}
+//void GraphicsScene::moveRight()
+//{
+//    if (m_StarFighter)
+//    {
+//        qreal newXPos = m_StarFighter->x() + 5.0;
 
-void GraphicsScene::keyPressEvent(QKeyEvent *event)
-{
-    qDebug() << "events GraphicsScene";
-    switch (event->key())
-    {
-    case Qt::Key_Space:
-        if (!m_GameStared)
-            startGame();
-        else
-            fire();
-        break;
+//        if (newXPos < width() - m_StarFighter->size().width())
+//            m_StarFighter->setX(newXPos);
+//    }
+//}
 
-    case Qt::Key_Left:
-        moveLeft();
-        break;
+//void GraphicsScene::fire()
+//{
+//    if (!m_Timer)
+//    {
+//        m_Timer = new QTimer(this);
+//        connect(m_Timer, SIGNAL(timeout()), this, SLOT(updateMissiles()));
+//        m_Timer->start(100);
+//    }
 
-    case Qt::Key_Right:
-        moveRight();
-        break;
+//    m_MissilesCollection.push_back(PixmapItem(":/Pictures/bomb"));
+//    PixmapItem & missile = m_MissilesCollection.back();
+//    missile.setZValue(2);
+//    missile.setX(m_StarFighter->x() + m_StarFighter->size().rwidth() / 2 - missile.size().width() / 2);
+//    missile.setY(m_StarFighter->y());
+//    QGraphicsScene::addItem(&missile);
+//}
 
-    }
-    event->ignore();
-}
+//void  GraphicsScene::updateMissiles()
+//{
+//    for (auto it = m_MissilesCollection.begin(); it != m_MissilesCollection.end(); ++it)
+//    {
+//        it->setY(it->y() - 10.0);
+//    }
+//}
+
+//void GraphicsScene::keyPressEvent(QKeyEvent *event)
+//{
+//    qDebug() << "events GraphicsScene";
+//    switch (event->key())
+//    {
+//    case Qt::Key_Space:
+//        if (!m_GameStared)
+//            startGame();
+//        else
+//            fire();
+//        break;
+
+//    case Qt::Key_Left:
+//        moveLeft();
+//        break;
+
+//    case Qt::Key_Right:
+//        moveRight();
+//        break;
+
+//    }
+//    event->ignore();
+//}

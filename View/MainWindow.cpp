@@ -15,14 +15,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     setWindowState(Qt::WindowFullScreen);
 
-    qDebug() << "height " << geometry().height();
-    qDebug() << "width " << geometry().width();
+//    showFullScreen();
 
-    m_Scene = new GraphicsScene(0, 0, geometry().width() - 2, geometry().height() - 2);
+    const QRect screenRect = QApplication::desktop()->screenGeometry(this);
+
+    m_Scene = new GraphicsScene(0, 0, screenRect.width() - 2, screenRect.height() - 2);
 
     m_View = new QGraphicsView(m_Scene, this);
     m_View->setAlignment(Qt::AlignCenter);
 
+    m_Scene->setupScene();
     //scene->setupScene(newAction, quitAction);
 
 //    #ifndef QT_NO_OPENGL
@@ -42,7 +44,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << "events";
+    qDebug() << "MainWindow events";
+
+//    qDebug() << "height " << geometry().height();
+//    qDebug() << "width " << geometry().width();
+
     switch (event->key())
     {
     case Qt::Key_Escape:
@@ -50,4 +56,5 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         qApp->quit();
         break;
     }
+    //event->ignore();
 }
