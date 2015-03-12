@@ -179,16 +179,16 @@ StarFighter::StarFighter() : PixmapItem(QString(":/Pictures/starfighter")),
     moveStateLeft->addTransition(movementAnimation, SIGNAL(finished()), stopState);
     moveStateRight->addTransition(movementAnimation, SIGNAL(finished()), stopState);
 
-    KeyLaunchTransition *fireTransition = new KeyLaunchTransition(this, QEvent::KeyPress, Qt::Key_Down);
-    fireTransition->setTargetState(fireState);
-    KeyLaunchTransition *fireTransition2 = new KeyLaunchTransition(this, QEvent::KeyPress, Qt::Key_Down);
-    fireTransition2->setTargetState(fireState);
-    KeyLaunchTransition *fireTransition3 = new KeyLaunchTransition(this, QEvent::KeyPress, Qt::Key_Down);
-    fireTransition3->setTargetState(fireState);
+    KeyLaunchTransition *fireTransitionFromStopState = new KeyLaunchTransition(this, QEvent::KeyPress, Qt::Key_Space);
+    fireTransitionFromStopState->setTargetState(fireState);
+    KeyLaunchTransition *fireTransitionFromMoveLeftState = new KeyLaunchTransition(this, QEvent::KeyPress, Qt::Key_Space);
+    fireTransitionFromMoveLeftState->setTargetState(fireState);
+    KeyLaunchTransition *fireTransitionFromMoveRightState = new KeyLaunchTransition(this, QEvent::KeyPress, Qt::Key_Space);
+    fireTransitionFromMoveRightState->setTargetState(fireState);
 
-    stopState->addTransition(fireTransition);
-    moveStateLeft->addTransition(fireTransition2);
-    moveStateRight->addTransition(fireTransition3);
+    stopState->addTransition(fireTransitionFromStopState);
+    moveStateLeft->addTransition(fireTransitionFromMoveLeftState);
+    moveStateRight->addTransition(fireTransitionFromMoveRightState);
 
     QHistoryState *historyState = new QHistoryState(moving);
     fireState->addTransition(historyState);
@@ -206,27 +206,33 @@ void StarFighter::stop()
 
 void StarFighter::moveLeft()
 {
-    movementAnimation->setEndValue(QPointF(0,y()));
-    movementAnimation->setDuration(x()/2*15);
-    movementAnimation->start();
+    if (movementAnimation->state() != QAbstractAnimation::Running)
+    {
+        movementAnimation->setEndValue(QPointF(0,y()));
+        movementAnimation->setDuration(x() * 5);
+        movementAnimation->start();
+    }
 }
 
 void StarFighter::moveRight()
 {
-    movementAnimation->setEndValue(QPointF(scene()->width()-size().width(),y()));
-    movementAnimation->setDuration((scene()->width()-size().width()-x())/2*15);
-    movementAnimation->start();
+    if (movementAnimation->state() != QAbstractAnimation::Running)
+    {
+        movementAnimation->setEndValue(QPointF(scene()->width()-size().width(),y()));
+        movementAnimation->setDuration((scene()->width()-size().width()-x()) * 5);
+        movementAnimation->start();
+    }
 }
 
 void StarFighter::fire()
 {
     qDebug() << "StarFighter::fire";
     PixmapItem *missile = new PixmapItem(":/Pictures/bomb");
-    missile->setZValue(2);
-    missile->setX(x() + size().rwidth() / 2 - missile->size().width() / 2);
+    missile->setZValue(1);
+    missile->setX(x() + size().width() / 2 - missile->size().width() / 2);
     missile->setY(y());
-    //GraphicsScene *scene = static_cast<GraphicsScene *>(scene());
-    scene()->addItem(missile);
+    GraphicsScene *scene = static_cast<GraphicsScene *>(this->scene());
+    scene->addItem(missile);
 
     QPropertyAnimation * missleAnimation = new QPropertyAnimation(missile, "pos");
 

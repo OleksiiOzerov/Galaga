@@ -34,12 +34,12 @@ GraphicsScene::GraphicsScene(int x, int y, int width, int height) :
         qreal initX, initY;
         qreal destX, destY;
     } logoData[nLetters] = {
-        {"g", -1000, -1000, 300, 150 },
-        {"a",  -800, -1000, 350, 150 },
-        {"l",  -600, -1000, 400, 120 },
-        {"a",  -400, -1000, 460, 150 },
-        {"g",  1000,  2000, 350, 250 },
-        {"a",   800,  2000, 400, 250 }
+        {"g", -1000, -1000, width / 2.0 - 125, height / 2.0 },
+        {"a",  -800, -1000, width / 2.0 - 75,  height / 2.0 },
+        {"l",  -600, -1000, width / 2.0 - 25,  height / 2.0 },
+        {"a",  -400, -1000, width / 2.0 + 25,  height / 2.0 },
+        {"g",  1000,  2000, width / 2.0 + 75,  height / 2.0 },
+        {"a",   800,  2000, width / 2.0 + 125, height / 2.0 }
     };
 
     gameLogoAnimation = new QSequentialAnimationGroup(this);
@@ -66,7 +66,7 @@ GraphicsScene::GraphicsScene(int x, int y, int width, int height) :
     m_StarFighter = new StarFighter();
 
     m_StarFighter->setZValue(1);
-    m_StarFighter->setPos(400, 500);
+    m_StarFighter->setPos(width / 2.0, height * 0.9);
     m_StarFighter->resizePixmap(50, 50);
     m_StarFighter->hide();
     QGraphicsScene::addItem(m_StarFighter);
