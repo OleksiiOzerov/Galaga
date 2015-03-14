@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_View = new QGraphicsView(m_Scene, this);
     m_View->setAlignment(Qt::AlignCenter);
 
-    m_Scene->setupScene();
+    m_Scene->setupGameStateMachine();
     //scene->setupScene(newAction, quitAction);
 
 //    #ifndef QT_NO_OPENGL

@@ -18,15 +18,17 @@ SOURCES += main.cpp \
     View/MainWindow.cpp \
     View/GraphicsScene.cpp \
     View/PixmapItem.cpp \
-    View/AnimationState.cpp \
-    View/StarFighter.cpp
+    View/StarFighter.cpp \
+    View/GameStates.cpp \
+    View/AnimationState.cpp
 
 HEADERS  += \
     View/MainWindow.hpp \
     View/GraphicsScene.hpp \
     View/PixmapItem.hpp \
-    View/AnimationState.hpp \
-    View/StarFighter.hpp
+    View/StarFighter.hpp \
+    View/GameStates.hpp \
+    View/AnimationState.hpp
 
 RESOURCES += \
     Galaga.qrc

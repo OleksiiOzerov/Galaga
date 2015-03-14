@@ -1,9 +1,11 @@
-#ifndef ANIMATIONSTATE_H
-#define ANIMATIONSTATE_H
+#ifndef ANIMATIONSTATE_HPP
+#define ANIMATIONSTATE_HPP
 
 #include <QState>
-#include <QAbstractAnimation>
 
+QT_BEGIN_NAMESPACE
+class QAbstractAnimation;
+QT_END_NAMESPACE
 
 class AnimationState : public QState
 {
@@ -27,29 +29,4 @@ private:
 
     QAbstractAnimation *m_animation;
 };
-
-
-class GameStartState : public QState
-{
-    Q_OBJECT
-public:
-    explicit GameStartState(QState *parent = 0) : QState(parent) {}
-
-signals:
-    void startGame();
-
-protected:
-    void onEntry(QEvent *)
-    {
-        emit startGame();
-    }
-
-
-private:
-    Q_DISABLE_COPY(GameStartState)
-
-};
-
-
-#endif // ANIMATIONSTATE_H
-
+#endif // ANIMATIONSTATE_HPP

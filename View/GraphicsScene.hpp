@@ -1,13 +1,14 @@
 #ifndef GRAPHICSVIEW_HP
 #define GRAPHICSVIEW_HP
 
-
-
 #include <QGraphicsScene>
-#include <QLinkedList>
 
+QT_BEGIN_NAMESPACE
 class QSequentialAnimationGroup;
 class QParallelAnimationGroup;
+//class QGraphicsTextItem;
+QT_END_NAMESPACE
+
 class StarFighter;
 class PixmapItem;
 
@@ -18,33 +19,30 @@ class GraphicsScene : public QGraphicsScene
 public:
     explicit GraphicsScene(int x, int y, int width, int height);
 
-    void setupScene();
+    void setupGameStateMachine();
 
-private slots:
-    void gameStarted();
-    //void updateMissiles();
+//private slots:
+//    void gameStarted();
 
 protected:
     //void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 
 private:
-//    void startGame();
 
-//    void moveLeft();
-//    void moveRight();
+    friend class PlayingGameState;
 
-//    void fire();
+    void setGameBackground(int sceneWidth, int sceneHeight);
 
-//    bool m_GameStared;
+    void createGameLogoAnimation(int sceneWidth, int sceneHeight);
+
+    void createStarfighter();
+
+    static const int screenHeightCoefficient = 13;
 
     StarFighter * m_StarFighter;
-
-//    QTimer * m_Timer;
-
-//    QLinkedList<PixmapItem> m_MissilesCollection;
-
+    QGraphicsTextItem *m_textInformation;
     QSequentialAnimationGroup * gameLogoAnimation;
-    QParallelAnimationGroup * gamelogoFadingAnimation;
+    QParallelAnimationGroup * gameLogoFadingAnimation;
 };
 
 #endif // GRAPHICSVIEW_HP

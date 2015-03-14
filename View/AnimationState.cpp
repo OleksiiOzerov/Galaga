@@ -1,12 +1,10 @@
 #include "AnimationState.hpp"
-
-QT_BEGIN_NAMESPACE
+#include <QAbstractAnimation>
 
 AnimationState::AnimationState(QState *parent) :
     QState(parent), m_animation(0)
 {
 }
-
 
 void AnimationState::setAnimation(QAbstractAnimation* animation)
 {
@@ -46,6 +44,3 @@ bool AnimationState::event(QEvent *e)
 {
     return QState::event(e);
 }
-
-
-QT_END_NAMESPACE
