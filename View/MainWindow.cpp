@@ -44,17 +44,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << "MainWindow events";
-
-//    qDebug() << "height " << geometry().height();
-//    qDebug() << "width " << geometry().width();
+    //qDebug() << "MainWindow events";
 
     switch (event->key())
     {
     case Qt::Key_Escape:
         qDebug() << "Key_Escape";
         qApp->quit();
-        break;
+        event->accept();
+        return;
     }
-    //event->ignore();
+    event->ignore();
 }

@@ -7,6 +7,7 @@
 PixmapItem::PixmapItem(const QString &imagePath, QGraphicsItem *parent) :
     QGraphicsObject(parent)
 {
+    setToolTip(imagePath);
     m_Pixmap = QPixmap(imagePath);
 }
 

@@ -4,6 +4,7 @@
 #include "GameStates.hpp"
 #include "AnimationState.hpp"
 #include "StarFighter.hpp"
+#include "Enemy.hpp"
 
 #include <QKeyEvent>
 #include <QPropertyAnimation>
@@ -90,6 +91,8 @@ void GraphicsScene::createStarfighter()
 
     m_StarFighter->hide();
     QGraphicsScene::addItem(m_StarFighter);
+
+
 }
 
 void GraphicsScene::setupGameStateMachine()

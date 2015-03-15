@@ -1,5 +1,6 @@
 #include "StarFighter.hpp"
 #include "GraphicsScene.hpp"
+#include "Rocket.hpp"
 
 #include <QGraphicsScene>
 #include <QState>
@@ -83,7 +84,6 @@ private:
 
 class KeyTransition : public QKeyEventTransition
 {
-
 public:
     KeyTransition(StarFighter *b, QEvent::Type t, int k)
     : QKeyEventTransition(b, t, k)
@@ -92,7 +92,7 @@ public:
 protected:
     bool eventTest(QEvent *event) Q_DECL_OVERRIDE
     {
-        qDebug() << "eventTest";
+        //qDebug() << "eventTest";
 
         if (!QKeyEventTransition::eventTest(event))
         {
@@ -132,7 +132,7 @@ public:
 protected:
     virtual bool eventTest(QEvent *event) Q_DECL_OVERRIDE
     {
-        qDebug() << "KeyLaunchTransition eventTest";
+        //qDebug() << "KeyLaunchTransition eventTest";
         if (!QKeyEventTransition::eventTest(event))
         {
             return false;
@@ -148,6 +148,7 @@ StarFighter::StarFighter() : PixmapItem(QString(":/Pictures/starfighter")),
     movementAnimation(0)
 {
     setFlags(QGraphicsItem::ItemIsFocusable);
+    setZValue(2);
 
     movementAnimation = new QPropertyAnimation(this, "pos");
 
@@ -227,16 +228,23 @@ void StarFighter::moveRight()
 void StarFighter::fire()
 {
     qDebug() << "StarFighter::fire";
-    PixmapItem *missile = new PixmapItem(":/Pictures/bomb");
-    missile->setZValue(1);
-    missile->setX(x() + size().width() / 2 - missile->size().width() / 2);
-    missile->setY(y());
+//    PixmapItem *missile = new PixmapItem(":/Pictures/rocket");
+//    missile->setZValue(2);
+//    missile->setX(x() + size().width() / 2 - missile->size().width() / 2);
+//    missile->setY(y() - missile->size().height());
+//    GraphicsScene *scene = static_cast<GraphicsScene *>(this->scene());
+//    scene->addItem(missile);
+
+//    QPropertyAnimation * missleAnimation = new QPropertyAnimation(missile, "pos");
+
+//    missleAnimation->setEndValue(QPointF(missile->x(), qreal(-10)));
+//    missleAnimation->setDuration(1000);
+//    missleAnimation->start();
+    Rocket *rocket = new Rocket();
+
+    rocket->setX(x() + size().width() / 2 - rocket->size().width() / 2);
+    rocket->setY(y() - rocket->size().height());
     GraphicsScene *scene = static_cast<GraphicsScene *>(this->scene());
-    scene->addItem(missile);
-
-    QPropertyAnimation * missleAnimation = new QPropertyAnimation(missile, "pos");
-
-    missleAnimation->setEndValue(QPointF(missile->x(), qreal(-10)));
-    missleAnimation->setDuration(1000);
-    missleAnimation->start();
+    scene->addItem(rocket);
+    rocket->launch();
 }

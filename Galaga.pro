@@ -20,7 +20,9 @@ SOURCES += main.cpp \
     View/PixmapItem.cpp \
     View/StarFighter.cpp \
     View/GameStates.cpp \
-    View/AnimationState.cpp
+    View/AnimationState.cpp \
+    View/Rocket.cpp \
+    View/Enemy.cpp
 
 HEADERS  += \
     View/MainWindow.hpp \
@@ -28,7 +30,9 @@ HEADERS  += \
     View/PixmapItem.hpp \
     View/StarFighter.hpp \
     View/GameStates.hpp \
-    View/AnimationState.hpp
+    View/AnimationState.hpp \
+    View/Rocket.hpp \
+    View/Enemy.hpp
 
 RESOURCES += \
     Galaga.qrc
