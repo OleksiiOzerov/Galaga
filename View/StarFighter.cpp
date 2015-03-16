@@ -143,7 +143,7 @@ protected:
 };
 
 
-StarFighter::StarFighter() : PixmapItem(QString(":/Pictures/starfighter")),
+StarFighter::StarFighter() : PixmapItem(QString("starfighter")),
     direction(StarFighter::None),
     movementAnimation(0)
 {
@@ -228,18 +228,7 @@ void StarFighter::moveRight()
 void StarFighter::fire()
 {
     qDebug() << "StarFighter::fire";
-//    PixmapItem *missile = new PixmapItem(":/Pictures/rocket");
-//    missile->setZValue(2);
-//    missile->setX(x() + size().width() / 2 - missile->size().width() / 2);
-//    missile->setY(y() - missile->size().height());
-//    GraphicsScene *scene = static_cast<GraphicsScene *>(this->scene());
-//    scene->addItem(missile);
 
-//    QPropertyAnimation * missleAnimation = new QPropertyAnimation(missile, "pos");
-
-//    missleAnimation->setEndValue(QPointF(missile->x(), qreal(-10)));
-//    missleAnimation->setDuration(1000);
-//    missleAnimation->start();
     Rocket *rocket = new Rocket();
 
     rocket->setX(x() + size().width() / 2 - rocket->size().width() / 2);

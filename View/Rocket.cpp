@@ -1,5 +1,5 @@
 #include "Rocket.hpp"
-#include "Graphicsscene.hpp"
+#include "GraphicsScene.hpp"
 #include "AnimationState.hpp"
 #include "Enemy.hpp"
 
@@ -8,7 +8,7 @@
 #include <QFinalState>
 #include <QDebug>
 
-Rocket::Rocket() : PixmapItem(QString(":/Pictures/rocket"))
+Rocket::Rocket() : PixmapItem(QString("rocket"))
 {
     setZValue(4);
 }
@@ -39,13 +39,13 @@ void Rocket::launch()
     machine->setInitialState(launched);
 
     //### Add a nice animation when the torpedo is destroyed
-    launched->addTransition(this, SIGNAL(rocketExploded()),final);
+    launched->addTransition(this, SIGNAL(rocketExploded()), final);
 
     //If the animation is finished, then we move to the final state
     launched->addTransition(launched, SIGNAL(animationFinished()), final);
 
     //The machine has finished to be executed, then the boat is dead
-    //connect(machine,SIGNAL(finished()),this, SIGNAL(torpedoExecutionFinished()));
+    connect(machine, SIGNAL(finished()),this, SIGNAL(rocketExecutionFinished()));
 
     machine->start();
 }
@@ -56,13 +56,7 @@ void Rocket::onAnimationLaunchValueChanged(const QVariant &)
     {
         if (Enemy *enemy = qgraphicsitem_cast<Enemy*>(item))
         {
-            qDebug() << "enemy tooltip" << enemy->toolTip();
-            qDebug() << "type" << enemy->type();
-            qDebug() << "enemy pos" << enemy->pos();
-            qDebug() << "rocket pos" << this->pos();
-            //enemy->destroy();
-            enemy->deleteLater();
-            this->deleteLater();
+            enemy->destroy();
             explode();
         }
     }
@@ -70,7 +64,5 @@ void Rocket::onAnimationLaunchValueChanged(const QVariant &)
 
 void Rocket::explode()
 {
-    qDebug() << "explode !!!!!!!!!!!!!";
-
     emit rocketExploded();
 }

@@ -11,6 +11,8 @@ QT_END_NAMESPACE
 
 class StarFighter;
 class PixmapItem;
+class Rocket;
+class Enemy;
 
 class GraphicsScene : public QGraphicsScene
 {
@@ -21,8 +23,13 @@ public:
 
     void setupGameStateMachine();
 
-//private slots:
-//    void gameStarted();
+    void addItem(Rocket *rocket);
+    void addItem(Enemy *enemy);
+    void addItem(QGraphicsItem *item);
+
+private slots:
+    void onRocketExecutionFinished();
+    void onEnemyExecutionFinished();
 
 protected:
     //void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;

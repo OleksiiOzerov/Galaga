@@ -7,12 +7,12 @@
 PixmapItem::PixmapItem(const QString &imagePath, QGraphicsItem *parent) :
     QGraphicsObject(parent)
 {
-    setToolTip(imagePath);
-    m_Pixmap = QPixmap(imagePath);
+    //setToolTip(imagePath);
+    m_Pixmap = QPixmap(QString(":/Pictures/") + imagePath);
 }
 
 PixmapItem::PixmapItem(const QString &imagePath, QGraphicsScene *scene) :
-    QGraphicsObject(), m_Pixmap(imagePath)
+    QGraphicsObject(), m_Pixmap(QString(":/Pictures/") + imagePath)
 {
     scene->addItem(this);
 }

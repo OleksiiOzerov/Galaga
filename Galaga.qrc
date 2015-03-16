@@ -10,5 +10,9 @@
         <file>Pictures/bomb.png</file>
         <file>Pictures/enemy.png</file>
         <file>Pictures/rocket.png</file>
+        <file>Pictures/explosion/step1.png</file>
+        <file>Pictures/explosion/step2.png</file>
+        <file>Pictures/explosion/step3.png</file>
+        <file>Pictures/explosion/step4.png</file>
     </qresource>
 </RCC>

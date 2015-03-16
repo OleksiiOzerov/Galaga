@@ -5,6 +5,7 @@
 #include "AnimationState.hpp"
 #include "StarFighter.hpp"
 #include "Enemy.hpp"
+#include "Rocket.hpp"
 
 #include <QKeyEvent>
 #include <QPropertyAnimation>
@@ -33,7 +34,7 @@ GraphicsScene::GraphicsScene(int x, int y, int width, int height) :
 
 void GraphicsScene::setGameBackground(int sceneWidth, int sceneHeight)
 {
-    PixmapItem *backgroundImage = new PixmapItem(QString(":/Pictures/background"));
+    PixmapItem *backgroundImage = new PixmapItem(QString("background"));
 
     backgroundImage->setZValue(1);
     backgroundImage->setPos(0,0);
@@ -68,7 +69,7 @@ void GraphicsScene::createGameLogoAnimation(int sceneWidth, int sceneHeight)
     gameLogoFadingAnimation = new QParallelAnimationGroup(this);
 
     for (int i = 0; i < nLetters; ++i) {
-        PixmapItem *logo = new PixmapItem(QLatin1String(":/Pictures/Welcome/logo-") + logoData[i].pix, this);
+        PixmapItem *logo = new PixmapItem(QString("Welcome/logo-") + logoData[i].pix, this);
         logo->setPos(logoData[i].initX, logoData[i].initY);
         logo->setZValue(i + 3);
         //creation of the animations for moving letters
@@ -91,8 +92,6 @@ void GraphicsScene::createStarfighter()
 
     m_StarFighter->hide();
     QGraphicsScene::addItem(m_StarFighter);
-
-
 }
 
 void GraphicsScene::setupGameStateMachine()
@@ -124,3 +123,34 @@ void GraphicsScene::setupGameStateMachine()
     connect(gameStateMachine, SIGNAL(finished()), qApp, SLOT(quit()));
 }
 
+void GraphicsScene::addItem(QGraphicsItem *item)
+{
+    qDebug() << " add item";
+    QGraphicsScene::addItem(item);
+}
+
+void GraphicsScene::addItem(Rocket *rocket)
+{
+    qDebug() << " add rocket";
+    connect(rocket, SIGNAL(rocketExecutionFinished()), this, SLOT(onRocketExecutionFinished()));
+    QGraphicsScene::addItem(rocket);
+}
+
+void GraphicsScene::addItem(Enemy *enemy)
+{
+    qDebug() << " add rocket";
+    connect(enemy, SIGNAL(enemyExecutionFinished()), this, SLOT(onEnemyExecutionFinished()));
+    QGraphicsScene::addItem(enemy);
+}
+
+void GraphicsScene::onRocketExecutionFinished()
+{
+    Rocket *rocket = qobject_cast<Rocket *>(sender());
+    rocket->deleteLater();
+}
+
+void GraphicsScene::onEnemyExecutionFinished()
+{
+    Enemy *enemy = qobject_cast<Enemy *>(sender());
+    enemy->deleteLater();
+}

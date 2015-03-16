@@ -15,6 +15,7 @@ public:
 
 signals:
     void rocketExploded();
+    void rocketExecutionFinished();
 
 private slots:
     void onAnimationLaunchValueChanged(const QVariant &);
