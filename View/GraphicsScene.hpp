@@ -2,6 +2,7 @@
 #define GRAPHICSVIEW_HP
 
 #include <QGraphicsScene>
+#include <QSet>
 
 QT_BEGIN_NAMESPACE
 class QSequentialAnimationGroup;
@@ -13,6 +14,7 @@ class StarFighter;
 class PixmapItem;
 class Rocket;
 class Enemy;
+class EnemyMissile;
 
 class GraphicsScene : public QGraphicsScene
 {
@@ -25,27 +27,31 @@ public:
 
     void addItem(Rocket *rocket);
     void addItem(Enemy *enemy);
+    void addItem(EnemyMissile *enemyMissile);
     void addItem(QGraphicsItem *item);
+
+signals:
+    void gameOver();
 
 private slots:
     void onRocketExecutionFinished();
     void onEnemyExecutionFinished();
+    void onMissileExecutionFinished();
+    void onStarFighterExecutionFinished();
 
 protected:
     //void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 
 private:
-
     friend class PlayingGameState;
 
     void setGameBackground(int sceneWidth, int sceneHeight);
-
     void createGameLogoAnimation(int sceneWidth, int sceneHeight);
-
     void createStarfighter();
 
     static const int screenHeightCoefficient = 13;
 
+    QSet<Enemy *> m_Enemies;
     StarFighter * m_StarFighter;
     QGraphicsTextItem *m_textInformation;
     QSequentialAnimationGroup * gameLogoAnimation;

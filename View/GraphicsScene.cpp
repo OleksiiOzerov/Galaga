@@ -6,6 +6,7 @@
 #include "StarFighter.hpp"
 #include "Enemy.hpp"
 #include "Rocket.hpp"
+#include "EnemyMissile.hpp"
 
 #include <QKeyEvent>
 #include <QPropertyAnimation>
@@ -91,6 +92,8 @@ void GraphicsScene::createStarfighter()
     m_StarFighter = new StarFighter();
 
     m_StarFighter->hide();
+    connect(m_StarFighter, SIGNAL(starFighterExecutionFinished()),
+            this, SLOT(onStarFighterExecutionFinished()));
     QGraphicsScene::addItem(m_StarFighter);
 }
 
@@ -125,22 +128,26 @@ void GraphicsScene::setupGameStateMachine()
 
 void GraphicsScene::addItem(QGraphicsItem *item)
 {
-    qDebug() << " add item";
     QGraphicsScene::addItem(item);
 }
 
 void GraphicsScene::addItem(Rocket *rocket)
 {
-    qDebug() << " add rocket";
     connect(rocket, SIGNAL(rocketExecutionFinished()), this, SLOT(onRocketExecutionFinished()));
     QGraphicsScene::addItem(rocket);
 }
 
 void GraphicsScene::addItem(Enemy *enemy)
 {
-    qDebug() << " add rocket";
+    m_Enemies.insert(enemy);
     connect(enemy, SIGNAL(enemyExecutionFinished()), this, SLOT(onEnemyExecutionFinished()));
     QGraphicsScene::addItem(enemy);
+}
+
+void GraphicsScene::addItem(EnemyMissile *enemyMissile)
+{
+    connect(enemyMissile, SIGNAL(missileExecutionFinished()), this, SLOT(onMissileExecutionFinished()));
+    QGraphicsScene::addItem(enemyMissile);
 }
 
 void GraphicsScene::onRocketExecutionFinished()
@@ -152,5 +159,30 @@ void GraphicsScene::onRocketExecutionFinished()
 void GraphicsScene::onEnemyExecutionFinished()
 {
     Enemy *enemy = qobject_cast<Enemy *>(sender());
+    m_Enemies.remove(enemy);
     enemy->deleteLater();
+}
+
+void GraphicsScene::onMissileExecutionFinished()
+{
+    EnemyMissile *enemyMissile = qobject_cast<EnemyMissile *>(sender());
+    enemyMissile->deleteLater();
+}
+
+void GraphicsScene::onStarFighterExecutionFinished()
+{
+    StarFighter *starFighter = qobject_cast<StarFighter *>(sender());
+    starFighter->deleteLater();
+
+    foreach (Enemy *enemy, m_Enemies)
+    {
+        enemy->deleteLater();
+    }
+
+    m_textInformation->setPos(width() / 2 - 300, height() / 2);
+    m_textInformation->setPlainText(QString("Game Over. Press Esc to quit."));
+    m_textInformation->show();
+
+    emit gameOver();
+
 }

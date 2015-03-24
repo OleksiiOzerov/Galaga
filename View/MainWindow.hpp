@@ -14,6 +14,9 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void gameOver();
+
 protected:
     void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 

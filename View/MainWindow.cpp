@@ -20,26 +20,23 @@ MainWindow::MainWindow(QWidget *parent)
     const QRect screenRect = QApplication::desktop()->screenGeometry(this);
 
     m_Scene = new GraphicsScene(0, 0, screenRect.width() - 2, screenRect.height() - 2);
+    connect(m_Scene, SIGNAL(gameOver()), this, SLOT(gameOver()));
 
     m_View = new QGraphicsView(m_Scene, this);
     m_View->setAlignment(Qt::AlignCenter);
 
     m_Scene->setupGameStateMachine();
-    //scene->setupScene(newAction, quitAction);
-
-//    #ifndef QT_NO_OPENGL
-//    m_View->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
-//    #endif
-
-    //resize(1005, 605);
-    //layout()->setSizeConstraint(QLayout::SetFixedSize);
 
     setCentralWidget(m_View);
 }
 
 MainWindow::~MainWindow()
 {
+}
 
+void MainWindow::gameOver()
+{
+    qDebug() << "Game is over";
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)

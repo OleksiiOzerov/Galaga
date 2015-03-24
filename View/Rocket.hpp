@@ -12,7 +12,6 @@ public:
 
     void launch();
 
-
 signals:
     void rocketExploded();
     void rocketExecutionFinished();

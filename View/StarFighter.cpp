@@ -1,5 +1,6 @@
 #include "StarFighter.hpp"
 #include "GraphicsScene.hpp"
+#include "AnimationState.hpp"
 #include "Rocket.hpp"
 
 #include <QGraphicsScene>
@@ -10,6 +11,8 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QHistoryState>
+#include <QFinalState>
+#include <QSequentialAnimationGroup>
 
 class StopState : public QState
 {
@@ -92,36 +95,19 @@ public:
 protected:
     bool eventTest(QEvent *event) Q_DECL_OVERRIDE
     {
-        //qDebug() << "eventTest";
-
         if (!QKeyEventTransition::eventTest(event))
         {
             event->ignore();
             return false;
         }
         return true;
-
-//        if(event->type() == QEvent::KeyPress)
-//        {
-//            QKeyEvent *key = static_cast<QKeyEvent *>(event);
-
-//            qDebug() << "key->key() " << key->key();
-//            if(key->key() == Qt::Key_Right)
-//            {
-//                qDebug() << "true";
-//                return true;
-//            }
-//            else
-//                return false;
-//        }
-//        return false;
     }
     void onTransition(QEvent *) Q_DECL_OVERRIDE
     {
         qDebug() << "onTransition";
     }
 };
-//This transition trigger the bombs launch
+
  class KeyLaunchTransition : public QKeyEventTransition
 {
 public:
@@ -132,7 +118,6 @@ public:
 protected:
     virtual bool eventTest(QEvent *event) Q_DECL_OVERRIDE
     {
-        //qDebug() << "KeyLaunchTransition eventTest";
         if (!QKeyEventTransition::eventTest(event))
         {
             return false;
@@ -142,6 +127,19 @@ protected:
     }
 };
 
+static QAbstractAnimation *setupDestroyAnimation(StarFighter *starFighter)
+{
+    QSequentialAnimationGroup *group = new QSequentialAnimationGroup(starFighter);
+    for (int i = 1; i <= 4; ++i) {
+         PixmapItem *step = new PixmapItem(QString("explosion/step%1").arg(i), starFighter);
+         step->setZValue(6);
+         step->setOpacity(0);
+         QPropertyAnimation *anim = new QPropertyAnimation(step, "opacity", group);
+         anim->setDuration(100);
+         anim->setEndValue(1);
+    }
+    return group;
+}
 
 StarFighter::StarFighter() : PixmapItem(QString("starfighter")),
     direction(StarFighter::None),
@@ -193,6 +191,22 @@ StarFighter::StarFighter() : PixmapItem(QString("starfighter")),
 
     QHistoryState *historyState = new QHistoryState(moving);
     fireState->addTransition(historyState);
+
+    //End
+    QFinalState *final = new QFinalState(machine);
+
+    //This state play the destroyed animation
+    AnimationState *destroyedState = new AnimationState(machine);
+    destroyedState->setAnimation(setupDestroyAnimation(this));
+
+    //Play a nice animation when the submarine is destroyed
+    moving->addTransition(this, SIGNAL(starFighterDestroyed()), destroyedState);
+
+    //Transition to final state when the destroyed animation is finished
+    destroyedState->addTransition(destroyedState, SIGNAL(animationFinished()), final);
+
+    //The machine has finished to be executed, then the submarine is dead
+    connect(machine,SIGNAL(finished()),this, SIGNAL(starFighterExecutionFinished()));
 }
 
 void StarFighter::fly()
@@ -227,7 +241,7 @@ void StarFighter::moveRight()
 
 void StarFighter::fire()
 {
-    qDebug() << "StarFighter::fire";
+    //qDebug() << "StarFighter::fire";
 
     Rocket *rocket = new Rocket();
 
@@ -236,4 +250,15 @@ void StarFighter::fire()
     GraphicsScene *scene = static_cast<GraphicsScene *>(this->scene());
     scene->addItem(rocket);
     rocket->launch();
+}
+
+void StarFighter::destroy()
+{
+    stop();
+    emit starFighterDestroyed();
+}
+
+int StarFighter::type() const
+{
+    return Type;
 }

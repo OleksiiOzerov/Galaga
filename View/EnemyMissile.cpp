@@ -1,29 +1,29 @@
-#include "Rocket.hpp"
+#include "EnemyMissile.hpp"
+#include "StarFighter.hpp"
 #include "GraphicsScene.hpp"
 #include "AnimationState.hpp"
-#include "Enemy.hpp"
 
 #include <QPropertyAnimation>
 #include <QStateMachine>
 #include <QFinalState>
 #include <QDebug>
 
-Rocket::Rocket() : PixmapItem(QString("rocket"))
+EnemyMissile::EnemyMissile() : PixmapItem(QString("rocket"))
 {
-    setZValue(4);
+        setZValue(4);
 }
 
-void Rocket::launch()
+void EnemyMissile::launch()
 {
     QPropertyAnimation *launchAnimation = new QPropertyAnimation(this, "pos");
-    launchAnimation->setEndValue(QPointF(x(), 0 - 15));
+    launchAnimation->setEndValue(QPointF(x(), scene()->height()));
     launchAnimation->setEasingCurve(QEasingCurve::InQuad);
-    launchAnimation->setDuration(y()*2);
+    launchAnimation->setDuration((scene()->height() - y()) * 2);
 
     connect(launchAnimation, SIGNAL(valueChanged(QVariant)),
             this, SLOT(onAnimationLaunchValueChanged(QVariant)));
 
-    connect(this, SIGNAL(rocketExploded()),
+    connect(this, SIGNAL(missileExploded()),
             launchAnimation, SLOT(stop()));
 
     //We setup the state machine of the torpedo
@@ -39,30 +39,30 @@ void Rocket::launch()
     machine->setInitialState(launched);
 
     //### Add a nice animation when the torpedo is destroyed
-    launched->addTransition(this, SIGNAL(rocketExploded()), final);
+    launched->addTransition(this, SIGNAL(missileExploded()), final);
 
     //If the animation is finished, then we move to the final state
     launched->addTransition(launched, SIGNAL(animationFinished()), final);
 
     //The machine has finished to be executed, then the boat is dead
-    connect(machine, SIGNAL(finished()),this, SIGNAL(rocketExecutionFinished()));
+    connect(machine, SIGNAL(finished()),this, SIGNAL(missileExecutionFinished()));
 
     machine->start();
 }
 
-void Rocket::onAnimationLaunchValueChanged(const QVariant &)
+void EnemyMissile::onAnimationLaunchValueChanged(const QVariant &)
 {
     foreach (QGraphicsItem *item , collidingItems(Qt::IntersectsItemBoundingRect))
     {
-        if (Enemy *enemy = qgraphicsitem_cast<Enemy*>(item))
+        if (StarFighter *starFighter = qgraphicsitem_cast<StarFighter*>(item))
         {
-            enemy->destroy();
+            starFighter->destroy();
             explode();
         }
     }
 }
 
-void Rocket::explode()
+void EnemyMissile::explode()
 {
-    emit rocketExploded();
+    emit missileExploded();
 }

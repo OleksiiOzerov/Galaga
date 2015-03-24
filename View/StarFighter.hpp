@@ -17,8 +17,8 @@ QT_END_NAMESPACE
 class StarFighter : public PixmapItem
 {
     Q_OBJECT
-public:
 
+public:
     enum Movement
     {
        None = 0,
@@ -26,18 +26,23 @@ public:
        Right
     };
 
+    enum { Type = UserType + 2};
+
     StarFighter();
 
     void fly();
-
     void stop();
+    void destroy();
+    void fire();
 
     void moveLeft();
-
     void moveRight();
 
+    virtual int type() const Q_DECL_OVERRIDE;
 
-    void fire();
+signals:
+    void starFighterDestroyed();
+    void starFighterExecutionFinished();
 
 private:
 

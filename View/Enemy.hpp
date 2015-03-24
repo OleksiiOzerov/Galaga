@@ -20,6 +20,11 @@ signals:
     void enemyDestroyed();
     void enemyExecutionFinished();
 
+private slots:
+    void EnemyFire();
+
+private:
+    void fireMissile();
 };
 
 #endif // ENEMY_HPP

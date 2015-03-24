@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     View/GameStates.cpp \
     View/AnimationState.cpp \
     View/Rocket.cpp \
-    View/Enemy.cpp
+    View/Enemy.cpp \
+    View/EnemyMissile.cpp
 
 HEADERS  += \
     View/MainWindow.hpp \
@@ -32,7 +33,8 @@ HEADERS  += \
     View/GameStates.hpp \
     View/AnimationState.hpp \
     View/Rocket.hpp \
-    View/Enemy.hpp
+    View/Enemy.hpp \
+    View/EnemyMissile.hpp
 
 RESOURCES += \
     Galaga.qrc
