@@ -48,6 +48,7 @@ private:
     void setGameBackground(int sceneWidth, int sceneHeight);
     void createGameLogoAnimation(int sceneWidth, int sceneHeight);
     void createStarfighter();
+    void setupGameData();
 
     static const int screenHeightCoefficient = 13;
 

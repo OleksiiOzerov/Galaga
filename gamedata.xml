@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<galaga>
+    <enemies>
+        <enemy type="0" points="10" name="Q1" />
+        <enemy type="1" points="20" name="Q2" />
+    </enemies>
+    <levels>
+        <level id="0" name="Start Level">
+            <enemyInstances type="0" appear="top" pos="0.5" enemyNumber="5"/>
+        </level>
+    </levels>
+</galaga>

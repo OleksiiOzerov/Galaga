@@ -14,8 +14,8 @@
 #include <QParallelAnimationGroup>
 #include <QStateMachine>
 #include <QtCore/QFinalState>
-//#include <QtCore/QPauseAnimation>
-
+#include <QXmlStreamReader>
+#include <QFile>
 #include <QGraphicsView>
 #include <QKeyEventTransition>
 #include <QDebug>
@@ -31,6 +31,8 @@ GraphicsScene::GraphicsScene(int x, int y, int width, int height) :
     createGameLogoAnimation(width, height);
 
     createStarfighter();
+
+    setupGameData();
 }
 
 void GraphicsScene::setGameBackground(int sceneWidth, int sceneHeight)
@@ -95,6 +97,51 @@ void GraphicsScene::createStarfighter()
     connect(m_StarFighter, SIGNAL(starFighterExecutionFinished()),
             this, SLOT(onStarFighterExecutionFinished()));
     QGraphicsScene::addItem(m_StarFighter);
+}
+
+void GraphicsScene::setupGameData()
+{
+    //parse the xml that contain all data of the game
+    QFile file(":gamedata.xml");
+    file.open(QIODevice::ReadOnly);
+
+    QXmlStreamReader reader;
+    reader.setDevice(&file);
+
+    while (!reader.atEnd())
+    {
+         reader.readNext();
+
+         qDebug() << reader.name();
+         if (reader.tokenType() == QXmlStreamReader::StartElement)
+         {
+             if (reader.name() == "enemy")
+             {
+
+                 qDebug() << reader.attributes().value("name").toString();
+                 qDebug() << reader.attributes().value("points").toString();
+                 qDebug() << reader.attributes().value("type").toString();
+             }
+             else if (reader.name() == "level")
+             {
+                 qDebug() << reader.attributes().value("id").toString().toInt();
+                 qDebug() << reader.attributes().value("name").toString();
+             }
+             else if (reader.name() == "enemyInstances")
+             {
+                 qDebug() << reader.attributes().value("type").toString();
+                 qDebug() << reader.attributes().value("appear").toString();
+                 qDebug() << reader.attributes().value("pos").toString();
+                 qDebug() << reader.attributes().value("enemyNumber").toString();
+             }
+         }
+         else if (reader.tokenType() == QXmlStreamReader::EndElement)
+         {
+            if (reader.name() == "level")
+            {
+            }
+         }
+   }
 }
 
 void GraphicsScene::setupGameStateMachine()
