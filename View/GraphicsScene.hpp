@@ -1,6 +1,8 @@
 #ifndef GRAPHICSVIEW_HP
 #define GRAPHICSVIEW_HP
 
+#include "LevelDescription.hpp"
+
 #include <QGraphicsScene>
 #include <QSet>
 
@@ -52,6 +54,7 @@ private:
 
     static const int screenHeightCoefficient = 13;
 
+    QList<LevelDescription> m_GameDescription;
     QSet<Enemy *> m_Enemies;
     StarFighter * m_StarFighter;
     QGraphicsTextItem *m_textInformation;

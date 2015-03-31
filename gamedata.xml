@@ -5,8 +5,9 @@
         <enemy type="1" points="20" name="Q2" />
     </enemies>
     <levels>
-        <level id="0" name="Start Level">
-            <enemyInstances type="0" appear="top" pos="0.5" enemyNumber="5"/>
+        <level id="0" title="Start Level">
+            <enemyWave type="0" enterSide="top" attitude="0.5" enemyNumber="5"/>
+            <enemyWave type="1" enterSide="left" attitude="0.5" enemyNumber="10"/>
         </level>
     </levels>
 </galaga>
