@@ -64,6 +64,7 @@ void GameDataParser::allLevelsDescription(QList<LevelDescription> &gameDescripti
             if (reader.name() == "level")
             {
                 gameDescription.append(currentLevel);
+                currentLevel.enemyWaves().clear();
             }
 
             if (reader.name() == "enemyWave")

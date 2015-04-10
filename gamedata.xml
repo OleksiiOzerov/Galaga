@@ -6,8 +6,13 @@
     </enemies>
     <levels>
         <level id="0" title="Start Level">
-            <enemyWave type="0" enterSide="top" attitude="0.5" enemyNumber="5"/>
-            <enemyWave type="1" enterSide="left" attitude="0.5" enemyNumber="10"/>
+            <enemyWave type="0" enterSide="top" attitude="0.7" enemyNumber="2"/>
+        </level>
+        <level id="1" title="Second Level">
+            <enemyWave type="0" enterSide="top" attitude="0.5" enemyNumber="3"/>
+        </level>
+        <level id="2" title="Third Level">
+            <enemyWave type="0" enterSide="top" attitude="0.5" enemyNumber="1"/>
         </level>
     </levels>
 </galaga>

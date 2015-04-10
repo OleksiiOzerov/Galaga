@@ -11,10 +11,18 @@ public:
 
     void addPause(int milliSeconds);
 
+    void setDuration(int milliSeconds);
+
+    void setScreenResolution(int screenWidth, int screenHeight);
+
     void updateCurrentTime(int currentTime) Q_DECL_OVERRIDE;
 private:
 
     int m_Pause;
+
+    int m_ScreenWidth;
+
+    int m_ScreenHeight;
 
     QPainterPath m_Path;
 };

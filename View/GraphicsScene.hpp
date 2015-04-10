@@ -34,6 +34,7 @@ public:
 
 signals:
     void gameOver();
+    void allEnemiesDestroyed();
 
 private slots:
     void onRocketExecutionFinished();

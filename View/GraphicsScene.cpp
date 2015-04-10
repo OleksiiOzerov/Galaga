@@ -180,6 +180,12 @@ void GraphicsScene::onEnemyExecutionFinished()
 {
     Enemy *enemy = qobject_cast<Enemy *>(sender());
     m_Enemies.remove(enemy);
+
+    if (m_Enemies.empty())
+    {
+        emit allEnemiesDestroyed();
+    }
+
     enemy->deleteLater();
 }
 
