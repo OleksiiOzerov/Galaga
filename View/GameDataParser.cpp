@@ -25,9 +25,9 @@ void GameDataParser::allLevelsDescription(QList<LevelDescription> &gameDescripti
          {
              if (reader.name() == "enemy")
              {
-                 qDebug() << reader.attributes().value("name").toString();
-                 qDebug() << reader.attributes().value("points").toString();
-                 qDebug() << reader.attributes().value("type").toString();
+//                 qDebug() << reader.attributes().value("name").toString();
+//                 qDebug() << reader.attributes().value("points").toString();
+//                 qDebug() << reader.attributes().value("type").toString();
              }
              else if (reader.name() == "level")
              {

@@ -34,18 +34,18 @@ GraphicsScene::GraphicsScene(int x, int y, int width, int height) :
 
     setupGameData();
 
-    for (int i = 0; i < m_GameDescription.size(); ++i)
-    {
-        qDebug() << m_GameDescription[i].levelId();
-        qDebug() << m_GameDescription[i].levelTitle();
+//    for (int i = 0; i < m_GameDescription.size(); ++i)
+//    {
+//        qDebug() << m_GameDescription[i].levelId();
+//        qDebug() << m_GameDescription[i].levelTitle();
 
-        for (int j = 0; j < m_GameDescription[i].enemyWaves().size(); ++j)
-        {
-            qDebug() <<  (m_GameDescription[i].enemyWaves())[j].type;
-            qDebug() <<  (m_GameDescription[i].enemyWaves())[j].enterPosition;
-            qDebug() <<  (m_GameDescription[i].enemyWaves())[j].enemyNumber;
-        }
-    }
+//        for (int j = 0; j < m_GameDescription[i].enemyWaves().size(); ++j)
+//        {
+//            qDebug() <<  (m_GameDescription[i].enemyWaves())[j].type;
+//            qDebug() <<  (m_GameDescription[i].enemyWaves())[j].enterPosition;
+//            qDebug() <<  (m_GameDescription[i].enemyWaves())[j].enemyNumber;
+//        }
+//    }
 }
 
 void GraphicsScene::setGameBackground(int sceneWidth, int sceneHeight)

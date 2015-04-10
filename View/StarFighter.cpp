@@ -24,7 +24,6 @@ public:
 protected:
     void onEntry(QEvent *) Q_DECL_OVERRIDE
     {
-        qDebug() << "Stop";
         m_StarFighter->stop();
     }
 private:
@@ -43,7 +42,6 @@ public:
 protected:
     void onEntry(QEvent *) Q_DECL_OVERRIDE
     {
-        qDebug() << "MoveStateRight";
         m_StarFighter->moveRight();
     }
 private:
@@ -61,7 +59,6 @@ public:
 protected:
     void onEntry(QEvent *) Q_DECL_OVERRIDE
     {
-        qDebug() << "MoveStateLeft";
         m_StarFighter->moveLeft();
     }
 private:
@@ -78,7 +75,6 @@ public:
 protected:
     void onEntry(QEvent *) Q_DECL_OVERRIDE
     {
-        qDebug() << "LaunchState";
         m_StarFighter->fire();
     }
 private:
@@ -104,7 +100,7 @@ protected:
     }
     void onTransition(QEvent *) Q_DECL_OVERRIDE
     {
-        qDebug() << "onTransition";
+        //qDebug() << "onTransition";
     }
 };
 
